@@ -29,7 +29,7 @@ export function getAllPostIds() {
   });
 }
 
-export async function getPostData(id) {
+export async function getPostData(id: string) {
   const res = await fetch('http://localhost:3000/api/posts', {
     method: 'POST',
     body: JSON.stringify({id}),

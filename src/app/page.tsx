@@ -1,4 +1,4 @@
-import Link from 'next/Link'
+import Link from 'next/link'
 import { getSortedPostsData } from '../services/posts';
 import Layout from './layout'
 import Date from '../components/date'

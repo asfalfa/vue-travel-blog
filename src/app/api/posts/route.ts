@@ -33,7 +33,7 @@ export async function GET() {
   return NextResponse.json({ data }, { status: 200 })
 }
 
-export async function POST(req) {
+export async function POST(req: Request) {
   const request = await req.json();
   const id = request.id;
   const fullPath = path.join(postsDirectory,`${request.id}.md`);
