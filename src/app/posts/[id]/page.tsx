@@ -5,17 +5,17 @@ import Date from '../../../components/date'
 
 export default async function Post({ params }: { params: {id: string} }) {
     const postData = await getPostData(params.id);
-
+    
     return (
         <Layout>
             <div>
-                {postData.post.title}
+                {postData.title}
                 <br />
-                {postData.post.id}
+                {postData.id}
                 <br />
-                <Date dateString={postData.post.date} />
+                <Date dateString={postData.date} />
                 <br />
-                <div dangerouslySetInnerHTML={{ __html: postData.post.contentHtml }} />
+                <div dangerouslySetInnerHTML={{ __html: postData.contentHtml }} />
                 <br />
             </div>
             <Link href="/">Back</Link>
