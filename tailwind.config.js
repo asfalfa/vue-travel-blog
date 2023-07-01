@@ -73,4 +73,8 @@ module.exports = {
     },
   },
   plugins: [require("tailwindcss-animate")],
+  fontFamily: {
+    'display': ['Oswald'],
+    'body': ['"Open Sans"'],
+  }
 }
