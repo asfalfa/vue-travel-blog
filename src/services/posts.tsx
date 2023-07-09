@@ -31,6 +31,7 @@ export function getAllPostIds() {
 
 export async function getPostData(id: string) {
   const res = await fetch('http://localhost:3000/api/posts', {
+    next: { revalidate: 10 },
     method: 'POST',
     body: JSON.stringify({id}),
   })
