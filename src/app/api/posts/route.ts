@@ -1,50 +1,32 @@
-import fs from 'fs';
-import path from 'path';
-import matter from 'gray-matter';
 import { remark } from 'remark';
 import html from 'remark-html';
 import { NextResponse } from 'next/server';
- 
-const postsDirectory = path.join(process.cwd(), '/src/posts');
+import dbConnect from "../../../services/dbConnect";
+import Post from "../.././../models/Post";
 
 export async function GET() {
-  // Get file names under /posts
-  const fileNames = fs.readdirSync(postsDirectory);
-  const allPostsData = fileNames.map((fileName) => {
-    // Remove ".md" from file name to get id
-    const id = fileName.replace(/\.md$/, '');
-
-    // Read markdown file as string
-    const fullPath = path.join(postsDirectory, fileName);
-    const fileContents = fs.readFileSync(fullPath, 'utf8');
-
-    // Use gray-matter to parse the post metadata section
-    const matterResult = matter(fileContents);
-
-    // Combine the data with the id
-    return {
-      id,
-      ...matterResult.data,
-    };
-  });
-
-  const data = await allPostsData
-
-  return NextResponse.json({ data }, { status: 200 })
+  await dbConnect()
+  try {
+    const posts = await Post.find({}) /* find all the data in our database */
+    return NextResponse.json({ success: true, data: posts }, { status: 200 })
+  } catch (error) {
+    return NextResponse.json({ success: false }, { status: 400 })
+  }
 }
 
 export async function POST(req: Request) {
   const request = await req.json();
   const id = request.id;
-  const fullPath = path.join(postsDirectory,`${request.id}.md`);
-  const fileContents = fs.readFileSync(fullPath, 'utf8');
+  try {
+    let post = await Post.findOne({ id: id }) /* find all the data in our database */
+    const processedContent = await remark()
+    .use(html)
+    .process(post.content);
+    const contentHtml = processedContent.toString();
+    post.content = contentHtml;
 
-  // Use gray-matter to parse the post metadata section
-  const matterResult = matter(fileContents);
-  const processedContent = await remark()
-  .use(html)
-  .process(matterResult.content);
-  const contentHtml = processedContent.toString();
-
-  return NextResponse.json({ id, contentHtml, ...matterResult.data }, { status: 200 })
+    return NextResponse.json({ success: true, data: post }, { status: 200 })
+  } catch (error) {
+    return NextResponse.json({ success: false }, { status: 400 })
+  }
 }
