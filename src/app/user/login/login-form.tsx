@@ -1,0 +1,52 @@
+'use client'
+
+export default function LoginForm() {
+
+    const handleSubmit = async (event) => {
+        // Stop the form from submitting and refreshing the page.
+        event.preventDefault()
+     
+        // Get data from the form.
+        const data = {
+            email: event.target.email.value,
+            password: event.target.password.value,
+        }
+     
+        const response = await fetch('http://localhost:3000/api/users', {
+            next: { revalidate: 10 },
+            method: 'POST',
+            body: JSON.stringify(data),
+          })
+
+        // Get the response data from server as JSON.
+        // If server returns the name submitted, that means the form works.
+        const result = await response.json()
+        alert(result.data)
+    }
+
+  return (
+      <form onSubmit={handleSubmit} className='flex flex-col'>
+        <label htmlFor="email">Email</label>
+        <input
+            className='border border-neutral-300'
+            type="text"
+            id="email"
+            name="email"
+            required
+        />
+
+        <label htmlFor="password">Password</label>
+        <input
+            className='border border-neutral-300'
+            type="text"
+            id="password"
+            name="password"
+            required
+        />
+
+        <button type="submit" className="rounded-b-sm mt-2 mx-auto w-[300px] p-5 hover:bg-neutral-300">
+            Login
+        </button>
+      </form>
+  )
+}
