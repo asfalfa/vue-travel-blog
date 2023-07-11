@@ -13,15 +13,17 @@ export default function LoginForm() {
         }
      
         const response = await fetch('http://localhost:3000/api/users', {
-            next: { revalidate: 10 },
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
             body: JSON.stringify(data),
           })
 
         // Get the response data from server as JSON.
         // If server returns the name submitted, that means the form works.
         const result = await response.json()
-        alert(result.data)
+        alert(result.success)
     }
 
   return (
