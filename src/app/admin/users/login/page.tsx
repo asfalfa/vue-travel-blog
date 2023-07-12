@@ -1,6 +1,6 @@
-import Layout from '../../layout'
-import { Card, CardContent } from '../../../../@/components/ui/card';
-import LoginForm from './login-form';
+import Layout from '../../../layout'
+import { Card, CardContent } from '../../../../../@/components/ui/card';
+import LoginForm from './form';
 
 export default async function Login() {
 

@@ -1,6 +1,6 @@
-import Layout from '../../layout'
-import { Card, CardContent } from '../../../../@/components/ui/card';
-import RegisterForm from './register-form';
+import Layout from '../../../layout'
+import { Card, CardContent } from '../../../../../@/components/ui/card';
+import RegisterForm from './form';
 
 export default async function Register() {
 

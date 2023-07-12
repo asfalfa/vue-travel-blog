@@ -1,6 +1,6 @@
-import { Card, CardContent } from '../../../../@/components/ui/card'
-import Form from '../../../components/form'
-import Layout from '../../layout'
+import { Card, CardContent } from '../../../../../@/components/ui/card'
+import Form from './form'
+import Layout from '../../../layout'
 
 export default async function NewPost() {
   return (
