@@ -1,5 +1,6 @@
 import React from 'react'
 import './globals.scss'
+import Navbar from '../components/navbar/main'
 
 export const metadata = {
   title: 'A Travel Blog',
@@ -9,7 +10,8 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className="bg-gradient-to-br from-neutral-100 to-pink-200 h-full">
+      <body className="bg-gradient-to-br from-neutral-100 to-pink-200 min-h-screen">
+        <Navbar />
         {children}
       </body>
     </html>

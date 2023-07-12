@@ -1,5 +1,7 @@
 async function getPosts() {
-  const res = await fetch('http://localhost:3000/api/posts', { next: { revalidate: 10 } })
+  const res = await fetch('http://localhost:3000/api/posts', { 
+    next: { revalidate: 10 } 
+  })
 
   if (!res.ok) {
     // This will activate the closest `error.js` Error Boundary

@@ -2,7 +2,6 @@ import { getPostData, getAllPostIds } from '../../../services/posts'
 import Link from 'next/link'
 import Layout from '../../layout'
 import Date from '../../../components/date'
-import Navbar from '../../../components/navbar/main';
 import { Card, CardContent, CardFooter, CardHeader } from '../../../../@/components/ui/card';
 
 export default async function Post({ params }: { params: {id: string} }) {
@@ -11,8 +10,7 @@ export default async function Post({ params }: { params: {id: string} }) {
 
     return (
         <Layout>
-            <Navbar />
-            <Card className='mt-[51px] border-0 w-5/6 mx-auto'>
+            <Card className='pt-[51px] border-0 w-5/6 mx-auto min-h-full'>
                 <CardHeader className='overflow-hidden grid content-center h-[400px]'>
                   <img className='h-[500px] md:h-[800px] align-center w-full saturate-150' src={post.top_image_url} />
                 </CardHeader>

@@ -16,9 +16,8 @@ export default function Form() {
             date: event.target.date.value,
         }
      
-        const response = await fetch('http://localhost:3000/api/posts/new', {
-            next: { revalidate: 10 },
-            method: 'POST',
+        const response = await fetch('http://localhost:3000/api/posts', {
+            method: 'PUT',
             body: JSON.stringify(data),
           })
 
