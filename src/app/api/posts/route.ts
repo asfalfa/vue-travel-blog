@@ -18,7 +18,7 @@ export async function POST(req: Request) {
   const request = await req.json();
   const id = request.id;
   try {
-    let post = await Post.findOne({ id: id }) /* find all the data in our database */
+    const post = await Post.findOne({ id: id }) /* find all the data in our database */
     const processedContent = await remark()
     .use(html)
     .process(post.content);
@@ -28,5 +28,18 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: true, data: post }, { status: 200 })
   } catch (error) {
     return NextResponse.json({ success: false }, { status: 400 })
+  }
+}
+
+export async function PUT(req: Request) {
+  const request = await req.json();
+  let spaceRegex = /\s/g;
+  request.id = ((request.title).toLowerCase()).replace(spaceRegex, "-");
+  console.log(request.id)
+  try {
+      const post = await Post.create(request) /* create a new model in the database */
+      return NextResponse.json({ success: true, data: post }, { status: 200 })
+  } catch (error) {
+      return NextResponse.json({ success: false, error: error , data: request}, { status: 400 })
   }
 }
