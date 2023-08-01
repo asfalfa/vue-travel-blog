@@ -1,0 +1,29 @@
+POST http://localhost:3030/auth/discord/logout
+###
+POST http://localhost:3030/logout
+###
+POST http://localhost:3000/members/
+Content-Type: application/json
+
+{
+    "name" : "Laila Arrbyte 2",
+    "rank": "Ancient",
+    "discord": "no idea",
+    "lodestoneID" : "999666",
+    "portfolio" : "true",
+    "comment" : "Plays with basically no breaks"
+}
+
+###
+PATCH http://localhost:3000/members/63d8eb7b838dd85f35503898
+Content-Type: application/json
+
+{
+    "discord": "an actual idea",
+    "portfolio" : "false"
+}
+
+
+
+###
+DELETE http://localhost:3000/members/63d8ea335041fcb24b789bc0
