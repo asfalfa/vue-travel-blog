@@ -1,15 +1,34 @@
 <script setup>
-import { getUser } from '../../services/users';
+import { getUserLoginStatus } from '../../services/users';
 import {
     onMounted,
     ref,
-    computed
 } from 'vue'
+import VueCookies from 'vue-cookies'
 
 const user = ref();
 
+function getCookies() {
+    const id = VueCookies.get('tl-u');
+    const token = VueCookies.get('tl-uref');
+    const data = {
+        id: id,
+        token: token,
+    }
+
+    return data
+}
+
 onMounted(() => {
-    getUser();
+    getCookies().then(data => {
+        getUserLoginStatus(data.id, data.token).then(res => {
+            if(res.data.valid == true){
+                user.value = res.data.user;
+            } else{
+                console.log('navbar getUserLoginStatus else triggered');
+            }
+        })
+    })
 });
 </script>
 
