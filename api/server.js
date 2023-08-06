@@ -28,6 +28,9 @@ app.use(express.json())
 const postsRouter = require('./routes/posts');
 app.use('/posts', postsRouter);
 
+const usersRouter = require('./routes/users');
+app.use('/users', usersRouter);
+
 app.listen(3030, () => console.log('API Server Running'));
 
 module.exports = { 
