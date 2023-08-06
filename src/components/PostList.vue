@@ -13,7 +13,6 @@ function getPosts() {
     try {
         const response = getSortedPostsData();
         posts.value = response;
-        console.log(response)
     } catch (err) {
         if (err.response) {
             console.log("Server Error:", err);
