@@ -2,6 +2,9 @@ const mongoose = require('mongoose');
 
 /* PetSchema will correspond to a collection in your MongoDB database. */
 const UserSchema = new mongoose.Schema({ 
+  id: {
+    type: String,
+  },
   email: {
     type: String,
     required: [true, "Please provide the post's content"],
