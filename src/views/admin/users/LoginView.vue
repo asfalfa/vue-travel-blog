@@ -1,47 +1,82 @@
 <script setup>
 import VueCookies from 'vue-cookies'
 import { checkUser } from '../../../services/users'
+import {
+    onMounted,
+    ref
+} from 'vue'
 
-//this should be after succesful login, generate a random token and send it to the db, the db will hash it and then save the hash and send it here, then it will be stored as a cookie
-function setCookies(id, token){
-  VueCookies.set('tl-u' , id, "7d") 
-  VueCookies.set('tl-uref' , token, "7d") 
+const loggedIn = ref({});
+
+function getCookies() {
+  const id = VueCookies.get('tl-u');
+  const token = VueCookies.get('tl-uref');
+  if(id !== null && token !== null){
+    loggedIn.value = true;
+  } else{
+    loggedIn.value = false;
+  }
 }
+
+onMounted(() => {
+  getCookies();
+});
 
 </script>
 
 <script>
 export default {
   data: vm => ({
-    loading: false,
-    emailRules: [value => vm.checkEmail(value)],
-    timeout: null,
     email: '',
+    emailRules: [value => vm.checkEmail(value)],
+    password: '',
+    passwordRules: [value => vm.checkPwd(value)],
+    loading: false,
+    timeout: null,
   }),
   methods: {
-    async submit (event) {
-      this.loading = true
-
-      const results = await event
-      console.log(results)
+    async submit() {
+      this.loading = true;
       
-      checkUser(email, password).then(res =>{
+      checkUser(this.email, this.password).then(res => {
+        if (res.data.valid == false) {
+          alert('Your email or password is incorrect.');
+        } else{
+          alert('Logged in.');
+          VueCookies.remove('tl-u');
+          VueCookies.remove('tl-uref');
+          VueCookies.set('tl-u' , res.data.id, "1m") ;
+          VueCookies.set('tl-uref' , res.data.token, "1m");
+        }
+      });
 
-      })
-      this.loading = false
+      this.loading = false;
 
-      alert(JSON.stringify(results, null, 2))
     },
 
-    async checkEmail (email) {
+    async checkEmail(email) {
       return new Promise(resolve => {
-        clearTimeout(this.timeout)
+        clearTimeout(this.timeout);
 
         this.timeout = setTimeout(() => {
-          if (!email) return resolve('Please enter a valid email.')
-          if (email) return resolve(true)
-        }, 1000)
-      })
+          if (/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(email)) {
+            return resolve(true);
+          }else {
+            return resolve('Please enter a valid email.');
+          }
+        }, 1000);
+      });
+    },   
+
+    async checkPwd(password) {
+      return new Promise(resolve => {
+        clearTimeout(this.timeout);
+
+        this.timeout = setTimeout(() => {
+          if (!password) return resolve('Please enter a password.');
+          if (password) return resolve(true);
+        }, 1000);
+      });
     },
     
   },
@@ -49,26 +84,30 @@ export default {
 </script>
 
 <template>
-  <v-form v-model="valid">
-    <v-text-field
-      v-model="email"
-      :rules="emailRules"
-      label="E-mail"
-      required
-    ></v-text-field>
+  <v-container>
+    <v-card v-if="loggedIn">You are already logged in.</v-card>
+    <v-form v-if="!loggedIn" validate-on="submit lazy" @submit.prevent="submit">
+      <v-text-field
+        v-model="email"
+        :rules="emailRules"
+        label="E-mail"
+        required
+      ></v-text-field>
 
-    <v-text-field
-      v-model="password"
-      label="Password"
-      required
-    ></v-text-field>
+      <v-text-field
+        v-model="password"
+        :rules="passwordRules"
+        label="Password"
+        required
+      ></v-text-field>
 
-    <v-btn
-      :loading="loading"
-      type="submit"
-      block
-      class="mt-2"
-      text="Submit"
-    ></v-btn>
-  </v-form>
+      <v-btn
+        :loading="loading"
+        type="submit"
+        block
+        class="mt-2"
+        text="Submit"
+      ></v-btn>
+    </v-form>
+  </v-container>
 </template>

@@ -11,24 +11,22 @@ const user = ref();
 function getCookies() {
     const id = VueCookies.get('tl-u');
     const token = VueCookies.get('tl-uref');
-    const data = {
-        id: id,
-        token: token,
-    }
-
-    return data
-}
-
-onMounted(() => {
-    getCookies().then(data => {
-        getUserLoginStatus(data.id, data.token).then(res => {
+    if(id !== null && token !== null){
+        getUserLoginStatus(id, token).then(res => {
+            console.log(res.data)
             if(res.data.valid == true){
                 user.value = res.data.user;
             } else{
                 console.log('navbar getUserLoginStatus else triggered');
             }
         })
-    })
+    } else{
+        console.log('navbar id or token null');
+    }
+}
+
+onMounted(() => {
+    getCookies();
 });
 </script>
 
