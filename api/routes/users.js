@@ -41,13 +41,17 @@ function compareAsync(req, db) {
 // addUser
 router.put('/', async(req, res) => {
     try{
-        const existingUser = await User.findOne({ email: req.body.email });
-        
-        if(existingUser !== null) {
+        if(!req.body.email || !(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(req.body.email)) ){
             res.status(200).json({valid: false})
         } else{
-            hashAsync(req)
-            res.status(200).json({valid: true})
+            const existingUser = await User.findOne({ email: req.body.email });
+        
+            if(existingUser !== null) {
+                res.status(200).json({valid: false})
+            } else{
+                hashAsync(req)
+                res.status(200).json({valid: true})
+            }
         }
     }catch(err){
         res.status(500).json({message: err.message})
