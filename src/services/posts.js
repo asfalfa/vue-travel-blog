@@ -20,6 +20,27 @@ export function getSortedPostsData() {
   });
 }
 
+export async function addPost(title, content){
+  const res = await axios.put('http://localhost:3030/posts/', {
+    title: title,
+    content: content,
+  }).then(res => {
+      return res
+  })
+  
+  return res
+}
+
+export async function editPost(data){
+  const res = await axios.put('http://localhost:3030/posts/' + data.id, {
+    data: data,
+  }).then(res => {
+      return res
+  })
+  
+  return res
+}
+
 // export function getAllPostIds() {
 //   return (allPostsData.data).map((post) => {
 //     return {
