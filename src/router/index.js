@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { getUserLoginStatus } from '../services/users';
 import VueCookies from 'vue-cookies'
 import HomeView from '../views/HomeView.vue'
 import PostView from '../views/PostView.vue'
@@ -6,6 +7,7 @@ import AdminView from '../views/admin/AdminView.vue'
 import PostsView from '../views/admin/PostsView.vue'
 import AddPostView from '../views/admin/posts/AddPostView.vue'
 import EditPostView from '../views/admin/posts/EditPostView.vue'
+import EditPostSingleView from '../views/admin/posts/EditPostSingleView.vue'
 import UsersView from '../views/admin/UsersView.vue'
 import LoginView from '../views/admin/users/LoginView.vue'
 import RegisterView from '../views/admin/users/RegisterView.vue'
@@ -57,6 +59,10 @@ const router = createRouter({
               path: 'edit',
               component: EditPostView,
             },
+            {
+              path: 'edit/:id',
+              component: EditPostSingleView,
+            },
           ]
         },
       ]
@@ -78,10 +84,17 @@ async function canUserAccess(url){
   if(!url.meta.requiresAuth){
     return true
   } else{
+    const id = VueCookies.get('tl-u');
     const token = VueCookies.get('tl-uref');
-    // Here we have to check with the DB if the token exists, the token will be a hash linked to the db user, the db will have to de-hash it
-    if(token){ // if token matches, return true
-      return true
+    if(id !== null && token !== null){
+        let status = getUserLoginStatus(id, token).then(res => {
+            if(res.data.valid == true){
+              return true;
+            } else{
+              return false;
+            }
+        })
+        return status
     } else{
       return false
     }
