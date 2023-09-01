@@ -1,10 +1,12 @@
 <script setup>
-import { addUser } from '../../../services/users'
+import { addUser, checkUser } from '../../../services/users'
 </script>
 
 <script>
 export default {
   data: vm => ({
+    success: false,
+    failure: false,
     email: '',
     emailRules: [value => vm.checkEmail(value)],
     password: '',
@@ -18,11 +20,28 @@ export default {
       
       addUser(this.email, this.password).then(res => {
         if (res.data.valid == false) {
-          alert('This user already exists.');
+          this.failure = true;
         } else{
-          alert('User created. Please proceed to log in.');
+          this.failure = false;
+          this.success = true;
+          setTimeout(() => {
+            this.$router.push({ name: 'Home', query: { redirect: '/' } });
+          }, 5000);
+        }
+      })
+      checkUser(this.email, this.password).then(res => {
+        if (res.data.valid == false) {
+          alert('Your email or password is incorrect.');
+        } else{
+          this.success = true;
+          VueCookies.remove('tl-u');
+          VueCookies.remove('tl-uref');
+          VueCookies.set('tl-u' , res.data.id, "7d") ;
+          VueCookies.set('tl-uref' , res.data.token, "7d");
         }
       });
+
+
 
       this.loading = false;
 
@@ -58,27 +77,37 @@ export default {
 </script>
 
 <template>
-  <v-form validate-on="submit lazy" @submit.prevent="submit">
-    <v-text-field
-      v-model="email"
-      :rules="emailRules"
-      label="E-mail"
-      required
-    ></v-text-field>
-
-    <v-text-field
-      v-model="password"
-      :rules="passwordRules"
-      label="Password"
-      required
-    ></v-text-field>
-
-    <v-btn
-      :loading="loading"
-      type="submit"
-      block
-      class="mt-2"
-      text="Submit"
-    ></v-btn>
-  </v-form>
+  <v-container>
+    <v-form v-if="!success" fast-fail validate-on="submit lazy" @submit.prevent="submit">
+      <v-text-field
+        v-model="email"
+        :rules="emailRules"
+        label="E-mail"
+        required
+      ></v-text-field>
+  
+      <v-text-field
+        v-model="password"
+        :rules="passwordRules"
+        label="Password"
+        required
+      ></v-text-field>
+  
+      <v-btn
+        :loading="loading"
+        type="submit"
+        block
+        class="mt-2"
+        text="Submit"
+      ></v-btn>
+    </v-form>
+    <v-card v-if="success">
+      <v-card-title class="w-min mx-auto">User successfully created.</v-card-title>
+      <v-card-subtitle class="w-min mx-auto">You will be redirected momentarily.</v-card-subtitle>
+    </v-card>
+    <v-card v-if="failure">
+      <v-card-title class="w-min mx-auto">Something went wrong.</v-card-title>
+      <v-card-subtitle class="w-min mx-auto">Please try again.</v-card-subtitle>
+    </v-card>
+  </v-container>
 </template>

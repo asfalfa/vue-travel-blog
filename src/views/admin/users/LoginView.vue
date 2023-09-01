@@ -1,32 +1,14 @@
 <script setup>
 import VueCookies from 'vue-cookies'
 import { checkUser } from '../../../services/users'
-import {
-    onMounted,
-    ref
-} from 'vue'
-
-const loggedIn = ref({});
-
-function getCookies() {
-  const id = VueCookies.get('tl-u');
-  const token = VueCookies.get('tl-uref');
-  if(id !== null && token !== null){
-    loggedIn.value = true;
-  } else{
-    loggedIn.value = false;
-  }
-}
-
-onMounted(() => {
-  getCookies();
-});
-
 </script>
 
 <script>
 export default {
   data: vm => ({
+    loggedIn: false,
+    success: false,
+    failure: false,
     email: '',
     emailRules: [value => vm.checkEmail(value)],
     password: '',
@@ -35,23 +17,36 @@ export default {
     timeout: null,
   }),
   methods: {
+    getCookies() {
+      const id = VueCookies.get('tl-u');
+      const token = VueCookies.get('tl-uref');
+      if(id !== null && token !== null){
+        this.loggedIn = true;
+      } else{
+        this.loggedIn = false;
+      }
+    },
     async submit() {
       this.loading = true;
       
       checkUser(this.email, this.password).then(res => {
         if (res.data.valid == false) {
-          alert('Your email or password is incorrect.');
+          this.failure = true;
         } else{
-          alert('Logged in.');
+          this.failure = false;
+          this.success = true;
           VueCookies.remove('tl-u');
           VueCookies.remove('tl-uref');
-          VueCookies.set('tl-u' , res.data.id, "1m") ;
-          VueCookies.set('tl-uref' , res.data.token, "1m");
+          VueCookies.set('tl-u' , res.data.id, "7d") ;
+          VueCookies.set('tl-uref' , res.data.token, "7d");
         }
       });
 
       this.loading = false;
 
+      setTimeout(() => {
+        this.$router.push({ name: 'Home', query: { redirect: '/' } });
+      }, 5000);
     },
 
     async checkEmail(email) {
@@ -79,14 +74,21 @@ export default {
       });
     },
     
+    logOut(){
+      VueCookies.remove('tl-u');
+      VueCookies.remove('tl-uref');
+    },
+
+  },
+  created() {
+    this.getCookies();
   },
 }
 </script>
 
 <template>
   <v-container>
-    <v-card v-if="loggedIn">You are already logged in.</v-card>
-    <v-form v-if="!loggedIn" validate-on="submit lazy" @submit.prevent="submit">
+    <v-form v-if="!loggedIn && !success" validate-on="submit lazy" @submit.prevent="submit">
       <v-text-field
         v-model="email"
         :rules="emailRules"
@@ -109,5 +111,22 @@ export default {
         text="Submit"
       ></v-btn>
     </v-form>
+    <v-card v-if="loggedIn">
+      <v-card-title class="w-min mx-auto">You are already logged in.</v-card-title>
+      <v-btn
+      @click="logOut"
+      block
+      class="mt-2"
+      text="Log out"
+      ></v-btn>
+    </v-card>
+    <v-card v-if="success">
+      <v-card-title class="w-min mx-auto">Successfully logged in.</v-card-title>
+      <v-card-subtitle class="w-min mx-auto">You will be redirected momentarily.</v-card-subtitle>
+    </v-card>
+    <v-card v-if="failure">
+      <v-card-title class="w-min mx-auto">Your email or password is incorrect.</v-card-title>
+      <v-card-subtitle class="w-min mx-auto">Please try again.</v-card-subtitle>
+    </v-card>
   </v-container>
 </template>
