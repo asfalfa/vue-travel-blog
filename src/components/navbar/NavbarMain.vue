@@ -13,15 +13,14 @@ function getCookies() {
     const token = VueCookies.get('tl-uref');
     if(id !== null && token !== null){
         getUserLoginStatus(id, token).then(res => {
-            console.log(res.data)
             if(res.data.valid == true){
-                user.value = res.data.user;
+                user.value = res.data;
             } else{
-                console.log('navbar getUserLoginStatus else triggered');
+                user.value = null;
             }
         })
     } else{
-        console.log('navbar id or token null');
+        user.value = null;
     }
 }
 
@@ -51,11 +50,15 @@ onMounted(() => {
             </RouterLink>
         </div>
         <div class="right-0 absolute mr-5">
-            <RouterLink to="/" class="text-neutral-300 hover:text-white font-weight-bold text-overline">
+            <RouterLink v-if="user" to="/admin" class="text-neutral-300 mx-1 hover:text-white font-weight-bold text-overline">
+                {{user.email.split("@")[0].trim()}}
+                <span class="cursor-default">|</span>
+            </RouterLink>
+            <RouterLink to="/" class="text-neutral-300 mx-1 hover:text-white font-weight-bold text-overline">
                 Archive
             </RouterLink>
             <span class="cursor-default">|</span>
-            <RouterLink to="/" class="text-neutral-300 hover:text-white font-weight-bold text-overline">
+            <RouterLink to="/" class="text-neutral-300 mx-1 hover:text-white font-weight-bold text-overline">
                 Contact
             </RouterLink>
         </div>
