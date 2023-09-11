@@ -27,15 +27,15 @@ onMounted(() => {
 </script>
 
 <template>
-    <v-container class="grid grid-cols-2 gap-4">
-        <v-card className='mx-auto bg-neutral-200 hover:bg-white border-solid border-2 border-white hover:border-black w-3/4 hover:saturate-150'>
+    <v-container class="px-2">
+        <v-card className='mx-auto bg-neutral-200 hover:bg-white border-solid border-2 border-white w-full md:w-5/6'>
             <div className='overflow-hidden grid content-center'>
-                <img className='h-[200px] md:h-[300px] align-center w-full' :src="post.top_image_url" />
+                <v-img v-if="post.covers" className='align-center w-full' :src="post.covers[0]"></v-img>
             </div>
-            <div className='p-2 text-center'>
+            <div className='mx-2 p-2 text-center text-black/90 border-b-[1px] border-black'>
                 <div>
                     <small>
-                        <Date :date="post.date" /> | Category
+                        <Date v-if="post.date" :date="post.date" /> | Category
                     </small>
                 </div>
                 <div className='font-semibold text-xl'>{{post.title}}</div>
@@ -45,8 +45,11 @@ onMounted(() => {
                     </small>
                 </div>
             </div>
-            <div className='overflow-hidden grid content-center'>
-                <img className='h-[200px] md:h-[300px] align-center w-full' :src="post.bottom_image_url" />
+            <div class="text-black/90 px-8 py-4 text-justify">
+                {{ post.content }}
+            </div>
+            <div class="grid grid-cols-4">
+                <v-img v-for="image in post.gallery" :src="image"></v-img>
             </div>
         </v-card >
     </v-container>

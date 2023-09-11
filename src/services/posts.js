@@ -20,10 +20,8 @@ export function getSortedPostsData() {
   });
 }
 
-export async function addPost(title, content){
-  const res = await axios.put('http://localhost:3030/posts/', {
-    title: title,
-    content: content,
+export async function addPost(data){
+  const res = await axios.put('http://localhost:3030/posts/', data, {
   }).then(res => {
       return res
   })
@@ -60,4 +58,3 @@ export async function getPostData(id) {
   
   return res
 }
-  

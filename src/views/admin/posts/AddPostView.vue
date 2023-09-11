@@ -10,23 +10,49 @@ export default {
     loading: false,
     title: '',
     content: '',
+    category: '',
     author_name: '',
     date: '',
-    top_image_url: '',
-    bottom_image_url: '',
+    covers: null,
+    gallery: null,
     contentRules: [value => vm.checkContent(value)],
     timeout: null,
   }),
-  methods: {
+  methods: {    
+    uploadGallery (event) {
+      this.gallery = event.target.files
+      console.log(this.gallery);
+    },
+    uploadCovers (event) {
+      this.covers = event.target.files
+      console.log(this.covers);
+    },
     async submit() {
       this.loading = true;
-      
-      addPost(this.title, this.content).then(res => {
+      const formData = new FormData();
+      for (const i of Object.keys(this.gallery)) {
+        formData.append('gallery', this.gallery[i])
+      };
+      for (const i of Object.keys(this.covers)) {
+        formData.append('covers', this.covers[i])
+      };
+      formData.append('title', this.title);
+      formData.append('content', this.content);
+      formData.append('category', this.category);
+      formData.append('author_name', this.author_name);
+      formData.append('date', this.date);
+      console.log(formData)
+      addPost(formData).then(res => {
         if (res.data.valid == false) {
           this.failure = true;
         } else{
           this.failure = false;
           this.success = true;
+          setTimeout(() => {
+            const url = new URL('/admin/posts/edit', window.location.origin);
+            window.location.href = url.toString();
+            // router.push({ path: '/admin/posts/edit', prop: { plan: 'private' } })
+          }, 5000)
         }
       })
 
@@ -56,21 +82,28 @@ export default {
         v-model="title"
         :rules="contentRules"
         label="Title"
-        required
+        
       ></v-text-field>
-  
+
+      <v-text-field
+        v-model="category"
+        :rules="contentRules"
+        label="Category"
+        
+      ></v-text-field>
+
       <v-textarea
         v-model="content"
         :rules="contentRules"
         label="Content"
-        required
+        
       ></v-textarea>      
       
       <v-text-field
         v-model="author_name"
         :rules="contentRules"
         label="Author Name"
-        required
+        
       ></v-text-field>
 
       <div 
@@ -82,24 +115,16 @@ export default {
           v-model="date"
           :rules="contentRules"
           label="Date"
-          required
+          
         />
 
       </div>
 
-      <v-text-field
-        v-model="top_image_url"
-        :rules="contentRules"
-        label="Top Image"
-        required
-      ></v-text-field>
+      <label>Covers (max 2)</label>
+      <input type="file" @change="uploadCovers" multiple />
 
-      <v-text-field
-        v-model="bottom_image_url"
-        :rules="contentRules"
-        label="Bottom Image"
-        required
-      ></v-text-field>
+      <label>Gallery (max 10)</label>
+      <input type="file" @change="uploadGallery" multiple />
 
       <v-btn
         :loading="loading"
@@ -110,7 +135,7 @@ export default {
       ></v-btn>
     </v-form>
     <v-card v-if="success">
-      <v-card-title class="w-min mx-auto">User successfully created.</v-card-title>
+      <v-card-title class="w-min mx-auto">Post successfully created.</v-card-title>
       <v-card-subtitle class="w-min mx-auto">You will be redirected momentarily.</v-card-subtitle>
     </v-card>
     <v-card v-if="failure">

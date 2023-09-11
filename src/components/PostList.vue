@@ -30,7 +30,7 @@ onMounted(() => {
         <v-card v-for="post in posts" :key=post.title className='mx-auto bg-neutral-200 hover:bg-white border-solid border-2 border-white hover:border-black w-3/4 hover:saturate-150'>
             <RouterLink :to="'/posts/' + post.id" :key=post.title>
                 <div className='overflow-hidden grid content-center'>
-                    <img className='h-[200px] md:h-[300px] align-center w-full' :src=post.top_image_url />
+                    <img className='h-[200px] md:h-[300px] align-center w-full' :src=post.covers[0] />
                 </div>
                 <div className='p-2 text-center'>
                     <div>
@@ -46,7 +46,7 @@ onMounted(() => {
                     </div>
                 </div>
                 <div className='overflow-hidden grid content-center'>
-                    <img className='h-[200px] md:h-[300px] align-center w-full' :src=post.bottom_image_url />
+                    <img className='h-[200px] md:h-[300px] align-center w-full' :src=post.covers[1] />
                 </div>
             </RouterLink>
         </v-card >

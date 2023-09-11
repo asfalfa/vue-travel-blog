@@ -15,18 +15,20 @@ const PostSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please provide the author's name"],
     maxlength: [60, "Author's Name cannot be more than 60 characters"],
+  },  
+  category: {
+    type: String,
+    required: [true, "Please provide the post's content"],
   },
   content: {
     type: String,
     required: [true, "Please provide the post's content"],
   },
-  top_image_url: {
-    required: [true, 'Please provide an image url for this pet.'],
-    type: String,
+  covers: {
+    type: Array
   },
-  bottom_image_url: {
-    required: [true, 'Please provide an image url for this pet.'],
-    type: String,
+  gallery: {
+    type: Array
   },
   date: {
     required: [true, 'Please provide a date for this post.'],
