@@ -1,5 +1,6 @@
 import axios from "axios";
 
+// get /
 async function getPosts() {
   const res = await axios.get('http://localhost:3030/posts').then(response => {
     return response
@@ -7,19 +8,40 @@ async function getPosts() {
 
   return res
 }
+  // Children function of getPosts
+    const allPostsData = await getPosts();
 
-const allPostsData = await getPosts();
-
-export function getSortedPostsData() {
-  return (allPostsData.data).sort((a, b) => {
-    if (a.date < b.date) {
-      return 1;
-    } else {
-      return -1;
+    export function getSortedPostsData() {
+      return (allPostsData.data).sort((a, b) => {
+        if (a.date < b.date) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
     }
-  });
+
+    export function getPostsByTag(tag) {
+      let data = allPostsData.data.filter(x => x.category.includes(tag));
+      return data.sort((a, b) => {
+        if (a.date < b.date) {
+          return 1;
+        } else {
+          return -1;
+        }
+      });
+    }
+
+// get /:id
+export async function getPostData(id) {
+  const res = await axios.get('http://localhost:3030/posts/' + id).then(response => {
+    return response
+  })
+  
+  return res
 }
 
+// put /
 export async function addPost(data){
   const res = await axios.put('http://localhost:3030/posts/', data, {
   }).then(res => {
@@ -29,9 +51,9 @@ export async function addPost(data){
   return res
 }
 
+// put /:id
 export async function editPost(data){
-  const res = await axios.put('http://localhost:3030/posts/' + data.id, {
-    data: data,
+  const res = await axios.put('http://localhost:3030/posts/' + data.get('id'), data, {
   }).then(res => {
       return res
   })
@@ -39,21 +61,35 @@ export async function editPost(data){
   return res
 }
 
-// export function getAllPostIds() {
-//   return (allPostsData.data).map((post) => {
-//     return {
-//       params: {
-//         id: post.id,
-//       },
-//     };
-//   });
-// }
+// delete /:id
+export async function removePost(id){
+  const res = await axios.delete('http://localhost:3030/posts/' + id, {
+  }).then(res => {
+      return res
+  })
+  
+  return res
+}
 
-export async function getPostData(id) {
-  const res = await axios.post('http://localhost:3030/posts', {
-    id: id,
-  }).then(response => {
-    return response
+// put /:id/image
+export async function movePostImage(image, type, id){
+  const res = await axios.put('http://localhost:3030/posts/' + id + "/image", {
+    image: image,
+    type: type,
+  }).then(res => {
+      return res
+  })
+  
+  return res
+}
+
+// delete /:id/image
+export async function removePostImage(image, type, id){
+  const res = await axios.delete('http://localhost:3030/posts/' + id + "/image", {
+    image: image,
+    type: type,
+  }).then(res => {
+      return res
   })
   
   return res
