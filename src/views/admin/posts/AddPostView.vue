@@ -21,11 +21,9 @@ export default {
   methods: {    
     uploadGallery (event) {
       this.gallery = event.target.files
-      console.log(this.gallery);
     },
     uploadCovers (event) {
       this.covers = event.target.files
-      console.log(this.covers);
     },
     async submit() {
       this.loading = true;
@@ -41,7 +39,7 @@ export default {
       formData.append('category', this.category);
       formData.append('author_name', this.author_name);
       formData.append('date', this.date);
-      console.log(formData)
+
       addPost(formData).then(res => {
         if (res.data.valid == false) {
           this.failure = true;
@@ -88,7 +86,7 @@ export default {
       <v-text-field
         v-model="category"
         :rules="contentRules"
-        label="Category"
+        label="Category (separate each category with a comma) Ex. 'city, europe, food'"
         
       ></v-text-field>
 

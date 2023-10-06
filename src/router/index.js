@@ -11,6 +11,8 @@ import EditPostSingleView from '../views/admin/posts/EditPostSingleView.vue'
 import UsersView from '../views/admin/UsersView.vue'
 import LoginView from '../views/admin/users/LoginView.vue'
 import RegisterView from '../views/admin/users/RegisterView.vue'
+import TestView from '../views/admin/tests/TestView.vue'
+import TagView from '../views/TagView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -34,6 +36,11 @@ const router = createRouter({
       component: PostView
     },
     {
+      path: '/tags/:tag',
+      name: 'TagView',
+      component: TagView
+    },
+    {
       path: '/admin/',
       name: 'Admin',
       component: AdminView,
@@ -41,6 +48,11 @@ const router = createRouter({
         requiresAuth: true
       },
       children: [
+        {
+          path: 'test',
+          name: 'test',
+          component: TestView,
+        },
         {
           path: 'users',
           name: 'Users',
